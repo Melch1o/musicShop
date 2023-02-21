@@ -11,5 +11,11 @@ public abstract class Guitar extends StringInstrument {
         super(id, cost);
     }
 
+    public Guitar(int id, String name, double cost) {
+        super(id, name, cost);
+    }
 
+    public Guitar(String name, double price) {
+        super(name, price);
+    }
 }

@@ -12,5 +12,13 @@ public abstract class Keyboard extends Instrument {
         super(id, cost);
     }
 
+    public Keyboard(int id, String name, double cost) {
+        super(id, name, cost);
+    }
+
+    public Keyboard(String name, double price) {
+        super(name, price);
+    }
+
     public abstract int getKeyAmount();
 }

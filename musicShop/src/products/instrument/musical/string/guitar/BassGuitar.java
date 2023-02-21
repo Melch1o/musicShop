@@ -9,6 +9,14 @@ public class BassGuitar extends Guitar {
         super(id, cost);
     }
 
+    public BassGuitar(int id, String name, double cost) {
+        super(id, name, cost);
+    }
+
+    public BassGuitar(String name, double price) {
+        super(name, price);
+    }
+
     @Override
     public int getStringAmount() {
         return 4;

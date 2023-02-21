@@ -1,6 +1,15 @@
 package interaction;
 
 import products.Product;
+import products.instrument.musical.keyboard.Accordion;
+import products.instrument.musical.keyboard.Piano;
+import products.instrument.musical.string.Dombyra;
+import products.instrument.musical.string.guitar.AcousticGuitar;
+import products.instrument.musical.string.guitar.BassGuitar;
+import products.technic.electric.headphones.FullSizeHeadphone;
+import products.technic.electric.headphones.InnerHeadphone;
+import products.technic.electric.microphone.CondenserMic;
+import products.technic.electric.microphone.DynamicMic;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -112,7 +121,29 @@ public class Menu {
                 String name = sc.nextLine();
                 System.out.print(" Price: ");
                 double price = sc.nextDouble();
-                db.insertProduct(new Product(name, price));
+                System.out.println("""
+                           Choose the type:
+                          1. Accordion     2. Acoustic Guitar
+                          3. Bass Guitar   4. Dombyra\s
+                          5. Piano         6. Condenser Mic
+                          7. Dynamic Mic   8. Full-size Headphone
+                          9. Inner Headphone\s""");
+                int type = sc.nextInt();
+                switch (type) {
+                    case 1 -> db.insertProduct(new Accordion(name, price));
+                    case 2 -> db.insertProduct(new AcousticGuitar(name, price));
+                    case 3 -> db.insertProduct(new BassGuitar(name, price));
+                    case 4 -> db.insertProduct(new Dombyra(name, price));
+                    case 5 -> db.insertProduct(new Piano(name, price));
+                    case 6 -> db.insertProduct(new CondenserMic(name, price));
+                    case 7 -> db.insertProduct(new DynamicMic(name, price));
+                    case 8 -> db.insertProduct(new FullSizeHeadphone(name, price));
+                    case 9 -> db.insertProduct(new InnerHeadphone(name, price));
+                    default -> {
+                        System.out.println(" Please, Choose from the given options");
+                        adminPanel();
+                    }
+                }
                 System.out.println(" Product created successfully!\n" +
                         "=====================================");
             }
@@ -144,11 +175,23 @@ public class Menu {
 
         switch (option) {
             case 1 -> {
-                ArrayList<Product> pr = db.selectAllProducts();
-                System.out.println("==================Shop===============");
-                for (Product product : pr) {
-                    System.out.print(product.toString());
+                System.out.println("==================Shop===============\n" +
+                                   "What category you want to see?\n" +
+                                   " 1. Musical instruments\n" +
+                                   " 2. Studio gear\n" +
+                                   " 3. Back");
+                ArrayList<Product> pr = new ArrayList<>();
+                int choice = sc.nextInt();
+                switch (choice){
+                    case 1 -> pr = instruments();
+                    case 2 -> pr = technic();
+                    case 3 -> shop();
+                    default -> {
+                        System.out.println(" Please, choose from given options");
+                        shop();
+                    }
                 }
+
                 System.out.print("=====================================\n" +
                                    " What would you buy? \n" +
                                    " Enter ID's here: ");
@@ -157,7 +200,7 @@ public class Menu {
                 for (String s : strid) {
                     int id = Integer.parseInt(s);
                     try {
-                        user.addToCart(pr.get(id));
+                        user.addToCart(pr.get(id-1));
                     } catch (IndexOutOfBoundsException e) {
                         System.out.println(" ID: " + id + " out of bound");
                     }
@@ -200,5 +243,65 @@ public class Menu {
             default -> System.out.println(" Please, choose from given options");
         }
         shop();
+    }
+
+    private ArrayList<Product> instruments(){
+        System.out.print("""
+                 Available instruments: 
+                  1. Accordion
+                  2. Acoustic Guitar
+                  3. Bass Guitar
+                  4. Dombyra
+                  5. Piano
+                  6. Back
+                 
+                 What would you choose: """);
+        int choice = sc.nextInt();
+        ArrayList<Product> pr = new ArrayList<>();
+        switch (choice){
+            case 1 -> pr = db.selectSpecificProducts("Accordion");
+            case 2 -> pr = db.selectSpecificProducts("AcousticGuitar");
+            case 3 -> pr = db.selectSpecificProducts("BassGuitar");
+            case 4 -> pr = db.selectSpecificProducts("Dombyra");
+            case 5 -> pr = db.selectSpecificProducts("Piano");
+            case 6 -> shop();
+            default -> {
+                System.out.println(" Please, Choose from the given options");
+                instruments();
+            }
+        }
+        for (Product product : pr) {
+            System.out.print(product.toString());
+        }
+        return pr;
+    }
+
+    private ArrayList<Product> technic(){
+        System.out.print("""
+                 Available gear: 
+                  1. Condenser Mic
+                  2. Dynamic Mic
+                  3. Full-size Headphone
+                  4. Inner Headphone
+                  5. Back
+                 
+                 What would you choose: """);
+        int choice = sc.nextInt();
+        ArrayList<Product> pr = new ArrayList<>();
+        switch (choice){
+            case 1 -> pr = db.selectSpecificProducts("CondenserMic");
+            case 2 -> pr = db.selectSpecificProducts("DynamicMic");
+            case 3 -> pr = db.selectSpecificProducts("FullSizeHeadphone");
+            case 4 -> pr = db.selectSpecificProducts("InnerHeadphone");
+            case 5 -> shop();
+            default -> {
+                System.out.println(" Please, Choose from the given options");
+                instruments();
+            }
+        }
+        for (Product product : pr) {
+            System.out.print(product.toString());
+        }
+        return pr;
     }
 }
